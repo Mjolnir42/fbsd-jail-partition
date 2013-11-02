@@ -1,0 +1,49 @@
+--- rc.d/jail	2012-03-03 06:15:13.000000000 +0000
++++ rc.d/jail	2012-09-23 11:36:36.778816857 +0000
+@@ -114,6 +114,7 @@
+ 	eval _consolelog=\"\${jail_${_j}_consolelog:-${jail_consolelog}}\"
+ 	[ -z "${_consolelog}" ] && _consolelog="/var/log/jail_${_j}_console.log"
+ 	eval _fib=\"\${jail_${_j}_fib:-${jail_fib}}\"
++        eval _partition=\"\${jail_${_j}_partition:-${jail_partition}}\"
+ 
+ 	# Debugging aid
+ 	#
+@@ -132,6 +133,7 @@
+ 	debug "$_j procdir: $_procdir"
+ 	debug "$_j ruleset: $_ruleset"
+ 	debug "$_j fstab: $_fstab"
++	debug "$_j partition: $_partition"
+ 
+ 	i=0
+ 	while : ; do
+@@ -573,6 +575,11 @@
+ 		else
+ 			_setfib=""
+ 		fi
++		if [ -n "${_partition}" ]; then
++			_setpart="setpmac partition/'${_partition}'"
++		else
++			_setpart=""
++		fi
+ 		if checkyesno _mount; then
+ 			info "Mounting fstab for jail ${_jail} (${_fstab})"
+ 			if [ ! -f "${_fstab}" ]; then
+@@ -632,7 +639,7 @@
+ 			i=$((i + 1))
+ 		done
+ 
+-		eval ${_setfib} jail ${_flags} -i ${_rootdir} ${_hostname} \
++		eval ${_setfib} ${_setpart} jail ${_flags} -i ${_rootdir} ${_hostname} \
+ 			\"${_addrl}\" ${_exec_start} > ${_tmp_jail} 2>&1
+ 
+ 		if [ "$?" -eq 0 ] ; then
+--- defaults/rc.conf	2012-03-03 06:15:13.000000000 +0000
++++ defaults/rc.conf	2012-09-23 11:38:56.395799226 +0000
+@@ -686,6 +686,7 @@
+ #jail_example_mount_enable="NO"			# mount/umount jail's fs
+ #jail_example_fstab=""				# fstab(5) for mount/umount
+ #jail_example_flags="-l -U root"		# flags for jail(8)
++#jail_example_partition="0"			# mac_partition(4) partition to start the jail in
+ 
+ ##############################################################
+ ### Define source_rc_confs, the mechanism used by /etc/rc.* ##
