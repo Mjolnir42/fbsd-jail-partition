@@ -1,7 +1,7 @@
 FreeBSD partitioned jails patch
 ===============================
 
-Trivial patch for the FreeBSD's `/etc/rc.d/jail` to add support
+Trivial patch for FreeBSD's `/etc/rc.d/jail` to add support
 for `mac_partition(4)` partitions.
 
 It introduces a new per-jail variable in `rc.conf(5)`, similar
