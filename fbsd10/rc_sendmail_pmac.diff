@@ -1,0 +1,44 @@
+--- /etc/rc.sendmail	2014-01-16 22:41:39.000000000 +0000
++++ /etc/rc.sendmail	2014-08-31 01:55:17.000000000 +0000
+@@ -50,6 +50,9 @@
+ # The sendmail binary
+ sendmail_program=${sendmail_program:-/usr/sbin/sendmail}
+ 
++# Get mac_partition configuration
++eval _pmac=\$sendmail_pmac
++
+ # The pid is used to stop and restart the running daemon(s).
+ sendmail_pidfile=${sendmail_pidfile:-/var/run/sendmail.pid}
+ sendmail_mspq_pidfile=${sendmail_mspq_pidfile:-/var/spool/clientmqueue/sm-client.pid}
+@@ -61,19 +64,19 @@
+ 		;;
+ 	[Yy][Ee][Ss])
+ 		echo -n ' sendmail'
+-		${sendmail_program} ${sendmail_flags}
++		${_pmac:+setpmac $_pmac } ${sendmail_program} ${sendmail_flags}
+ 		;;
+ 	*)
+ 		case ${sendmail_submit_enable} in
+ 		[Yy][Ee][Ss])
+ 			echo -n ' sendmail-submit'
+-			${sendmail_program} ${sendmail_submit_flags}
++			${_pmac:+setpmac $_pmac } ${sendmail_program} ${sendmail_submit_flags}
+ 			;;
+ 		*)
+ 			case ${sendmail_outbound_enable} in
+ 			[Yy][Ee][Ss])
+ 				echo -n ' sendmail-outbound'
+-				${sendmail_program} ${sendmail_outbound_flags}
++				${_pmac:+setpmac $_pmac } ${sendmail_program} ${sendmail_outbound_flags}
+ 				;;
+ 			esac
+ 			;;
+@@ -159,7 +162,7 @@
+ 			case ${sendmail_msp_queue_enable} in
+ 			[Yy][Ee][Ss])
+ 				echo -n ' sendmail-clientmqueue'
+-				${sendmail_program} ${sendmail_msp_queue_flags}
++				${_pmac:+setpmac $_pmac } ${sendmail_program} ${sendmail_msp_queue_flags}
+ 				;;
+ 			esac
+ 		fi
