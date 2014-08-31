@@ -1,0 +1,28 @@
+--- /jail/nsd/etc/rc.d/sysctl	2014-01-16 22:41:40.000000000 +0000
++++ /etc/rc.d/sysctl	2014-08-30 19:14:34.000000000 +0000
+@@ -17,6 +17,7 @@
+ 
+ sysctl_start()
+ {
++	local _l _d
+ 	case $1 in
+ 	last)
+ 		command_args="-f"
+@@ -29,6 +30,17 @@
+ 	for _f in /etc/sysctl.conf /etc/sysctl.conf.local; do
+ 		[ -r ${_f} ] && ${command} ${command_args} ${_f} > /dev/null
+ 	done
++
++	_l=""
++	_d=/etc/sysctl.conf.d
++	if [ -d $_d ]; then
++		for _f in `ls ${_d}`; do
++			[ -f "${_d}/${_f}" ] && _l="${_l} ${_d}/${_f}"
++		done
++		for _f in ${_l}; do
++			[ -r ${_f} ] && ${command} ${command_args} ${_f} > /dev/null
++		done
++	fi
+ }
+ 
+ load_rc_config $name
