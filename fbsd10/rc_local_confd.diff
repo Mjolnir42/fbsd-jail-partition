@@ -1,0 +1,13 @@
+--- /etc/rc.subr	2014-01-16 22:41:39.000000000 +0000
++++ /etc/rc.subr	2014-08-30 18:25:38.000000000 +0000
+@@ -1039,6 +1043,10 @@
+ 		debug "Sourcing /etc/rc.conf.d/${_name}"
+ 		. /etc/rc.conf.d/"$_name"
+ 	fi
++	if [ -f /usr/local/etc/rc.conf.d/"$_name" ]; then
++		debug "Sourcing /usr/local/etc/rc.conf.d/${_name}"
++		. /usr/local/etc/rc.conf.d/"$_name"
++	fi
+ 
+ 	# Set defaults if defined.
+ 	for _var in $rcvar; do
